@@ -271,3 +271,21 @@ Numbered separately from the Turf study's; "Turf F5" refers to that study._
   entries. npm needs an override for a direct dependency to match its spec
   exactly, so `wire.mjs` writes `"$typesugar"` / `"$unplugin-typesugar"` for the
   two direct dependencies and file paths for the rest.
+- **F7 (gap, open; blocks Stage 2): operators on a type parameter are not
+  dispatched.** In a generic function with the dictionary in scope
+  (`c: Calc<A> = implicit()`, `Calc` with `@op` tags), `(a + b) * k` on
+  `a, b, k: A` stays native JavaScript. Specialisation then inlines that body
+  for a concrete instance unchanged, so for an object type the call returns
+  `NaN`; on concrete operand types the same expression dispatches and inlines
+  correctly (`({ v: (x.v + y.v) * x.v })`). `typesugar check` reports the
+  native operator (TS2365 / TS2363), but a bundler build does not type check,
+  so it ships silently. dinero's `core/` is generic over `TAmount`, and
+  `number` / `bigint` are primitives that operators never dispatch on, so
+  Stage 2 needs dispatch to the dictionary parameter in scope (or at least a
+  build error instead of native code). Repro:
+  `node case-study/demo/operators/run.mjs` (README alongside). Two smaller
+  things seen in the same output, for Stage 1: the hoisted specialisation
+  carried the typeclass's `/** @typeclass */` comment
+  (`const /** @typeclass */ __typesugar___...`), and an interface-only
+  typeclass emits a runtime companion (`export const Calc = {}` plus a
+  `globalThis.__typesugar_companions` write).
