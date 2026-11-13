@@ -1,0 +1,119 @@
+{
+  "dist": "<stage-0>/packages/dinero.js/dist",
+  "files": {
+    "esm/DineroCurrency-DpSMrUwZ.d.ts": {
+      "sha256": "3f79f5c86199740320e03ee9168f75ebe54047fa93f1006d7e7b9f3d715d84fe",
+      "raw": 421,
+      "gzip": 218,
+      "brotli": 185
+    },
+    "esm/bigint/currencies/index.d.ts": {
+      "sha256": "25ce9153af6739fbee3f1a879db68fa91d0bf71ef33d8460357bebbe591f3a9d",
+      "raw": 12903,
+      "gzip": 2865,
+      "brotli": 2261
+    },
+    "esm/bigint/currencies/index.js": {
+      "sha256": "a7cb1cbbc1bdbcd50ec99c39b6647d0094abc6c3ebff79b185b2700cc1c7eb0d",
+      "raw": 14798,
+      "gzip": 3476,
+      "brotli": 2628
+    },
+    "esm/bigint/index.d.ts": {
+      "sha256": "0970019e62d4dfa0315b875ada9a363cb3dfafa0050efcd8688806aea9f05ea9",
+      "raw": 4758,
+      "gzip": 1607,
+      "brotli": 1278
+    },
+    "esm/bigint/index.js": {
+      "sha256": "ff10bcd42fe580d09f15459ef0596cc3b34eda717e987a19565bf7f3c135c430",
+      "raw": 6392,
+      "gzip": 1892,
+      "brotli": 1487
+    },
+    "esm/currencies/index.d.ts": {
+      "sha256": "b45d8877d78e1e2b152ea96fc69ed9b6edd3565353ed002ccd94daf27a330df3",
+      "raw": 21493,
+      "gzip": 3793,
+      "brotli": 2830
+    },
+    "esm/currencies/index.js": {
+      "sha256": "4031e7ba4b4b8da2bcf6f155589058ab78c4499bce99fdec228a4e3cb0dce1ae",
+      "raw": 14459,
+      "gzip": 3466,
+      "brotli": 2604
+    },
+    "esm/index-D9iIqGL-.d.ts": {
+      "sha256": "a0ccc5e55be3d12ad7f5d293e9342e1c71380cfa2a1118b4d5ac38e0bbcc2d7a",
+      "raw": 23578,
+      "gzip": 3259,
+      "brotli": 2867
+    },
+    "esm/index.d.ts": {
+      "sha256": "e489789386f2385bab1be97ff37efa6ba5ae0c1709592ff25daadf4c2649fd33",
+      "raw": 3455,
+      "gzip": 1169,
+      "brotli": 891
+    },
+    "esm/index.js": {
+      "sha256": "c97169aee9e57b2c2c87f7b1edc76f5d4aafc6879646eb2289b8dff149d1b45a",
+      "raw": 6599,
+      "gzip": 1983,
+      "brotli": 1568
+    },
+    "esm/trimScale-C3-DjbPM.js": {
+      "sha256": "b9357170ab1b746b089ed6a1f851f41157215fe9544cde6310bc63d1cfd304ef",
+      "raw": 43578,
+      "gzip": 6551,
+      "brotli": 5813
+    },
+    "umd/bigint/index.development.js": {
+      "sha256": "4180e4a7d73f490e74b83239d0d48457ed954df409b2ca0073b0fc2e47d82fcc",
+      "raw": 67770,
+      "gzip": 11672,
+      "brotli": 9533
+    },
+    "umd/bigint/index.development.js.map": {
+      "sha256": "07380bbd5409cc0a15e7d026e8c2cfb07c8e1c9a73ea93b3f9c38b70cae6e4fe",
+      "raw": 132336,
+      "gzip": 18682,
+      "brotli": 15776
+    },
+    "umd/bigint/index.production.js": {
+      "sha256": "b7f9c20625c7c5d372db49ee0aed562ae69a8b4d28209871b6960257f93363ba",
+      "raw": 19218,
+      "gzip": 5184,
+      "brotli": 4171
+    },
+    "umd/bigint/index.production.js.map": {
+      "sha256": "f5c8b4a767cc56d0d74ed44aa1b5f792e4f83bb1fd35a1ab7799fa74b509bd83",
+      "raw": 128582,
+      "gzip": 18122,
+      "brotli": 15383
+    },
+    "umd/index.development.js": {
+      "sha256": "83382347d82d3eda9ea529114f3d3ff9ec65ebb7956e7a2cf37fbb2a77d72c69",
+      "raw": 67695,
+      "gzip": 11764,
+      "brotli": 9585
+    },
+    "umd/index.development.js.map": {
+      "sha256": "6ae6bf3b86fb5672f4359251a610faa9384347ecaa87942106dd85ee20dd6a90",
+      "raw": 136038,
+      "gzip": 19393,
+      "brotli": 16228
+    },
+    "umd/index.production.js": {
+      "sha256": "86021edd03c8aca646a5357cdcbfef7fe23fc25323159e868c05c4dada544bca",
+      "raw": 19020,
+      "gzip": 5240,
+      "brotli": 4267
+    },
+    "umd/index.production.js.map": {
+      "sha256": "feb411ede7f6a4ddab39b83cfaceb3e9367c80b128be48273e6301d63cf362c8",
+      "raw": 132244,
+      "gzip": 18822,
+      "brotli": 15781
+    }
+  }
+}
