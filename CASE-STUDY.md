@@ -271,21 +271,37 @@ Numbered separately from the Turf study's; "Turf F5" refers to that study._
   entries. npm needs an override for a direct dependency to match its spec
   exactly, so `wire.mjs` writes `"$typesugar"` / `"$unplugin-typesugar"` for the
   two direct dependencies and file paths for the rest.
-- **F7 (gap, open; blocks Stage 2): operators on a type parameter are not
-  dispatched.** In a generic function with the dictionary in scope
-  (`c: Calc<A> = implicit()`, `Calc` with `@op` tags), `(a + b) * k` on
-  `a, b, k: A` stays native JavaScript. Specialisation then inlines that body
-  for a concrete instance unchanged, so for an object type the call returns
-  `NaN`; on concrete operand types the same expression dispatches and inlines
-  correctly (`({ v: (x.v + y.v) * x.v })`). `typesugar check` reports the
-  native operator (TS2365 / TS2363), but a bundler build does not type check,
-  so it ships silently. dinero's `core/` is generic over `TAmount`, and
-  `number` / `bigint` are primitives that operators never dispatch on, so
-  Stage 2 needs dispatch to the dictionary parameter in scope (or at least a
-  build error instead of native code). Repro:
-  `node case-study/demo/operators/run.mjs` (README alongside). Two smaller
+- **F7 (bug, fixed): operators on a type parameter were not dispatched.**
+  In a generic function with the dictionary in scope (`c: Calc<A>`, `Calc`
+  with `@op` tags), `(a + b) * k` on `a, b, k: A` stayed native JavaScript,
+  and specialisation inlined that body unchanged for a concrete instance: for
+  an object type the call returned `NaN`, with no error from a bundler build
+  (which doesn't type check). dinero's `core/` is generic over `TAmount`, and
+  `number` / `bigint` are primitives that operators never dispatch on, so this
+  blocked Stage 2. Fix: an operator on a type parameter dispatches to a
+  parameter or `const` in scope typed `TC<A>` (an enclosing function's
+  parameter, `= implicit()`, a destructured `const`, through type aliases;
+  a shadowed binding is skipped, two that fit are an ambiguity error); the
+  specialiser inlines the instance for those operators as it does for
+  `c.add(a, b)` written out; `typesugar check` drops the operand errors where
+  the operator is rewritten and types the result as `A`. typesugar
+  `c33dfa8b`, tests first (7 rewrite and 2 check tests), docs in the
+  operators and specialisation guides. The full typesugar suite passes once
+  every package is built: the first run's 144 failures, in 47 files, were
+  packages with no `dist/` in that worktree, and those files pass after
+  `pnpm build`. Repro and before/after: `case-study/demo/operators/`. Two smaller
   things seen in the same output, for Stage 1: the hoisted specialisation
   carried the typeclass's `/** @typeclass */` comment
   (`const /** @typeclass */ __typesugar___...`), and an interface-only
   typeclass emits a runtime companion (`export const Calc = {}` plus a
   `globalThis.__typesugar_companions` write).
+- **F8 (gap, open): `typesugar check` doesn't see a rewritten operator's type
+  through `||`.** `const share: TAmount = (value * ratio) / total || zero`
+  emits the right code (`calculator.integerDivide(...) || zero`), but
+  TypeScript types the operator as `number`, so the `||` is `number |
+  TAmount` and the TS2322 on the annotation stays; without the annotation,
+  the next `remainder - share` can't dispatch (its right operand isn't a
+  `TAmount`). dinero's `distribute` has exactly this line. Not specific to
+  generics: the diagnostic filter's chain typing covers operator chains and
+  consts bound to them, not `||` / `??` / `?:` around them. Workaround: bind
+  the operator to an annotated `const` first. Not fixed here.

@@ -1,4 +1,4 @@
-import { implicit } from "@typesugar/typeclass";
+import { implicit } from '@typesugar/typeclass';
 
 export type Big = { v: number };
 

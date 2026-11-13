@@ -1,24 +1,38 @@
-// The same arithmetic with operator syntax (Stage 2's goal). This is what
-// dinero's core would read like if typesugar dispatched operators on a type
-// parameter to the dictionary in scope. It does NOT compile correctly today:
-// see README.md (finding F7).
-import { implicit } from '@typesugar/typeclass';
-import type { DineroCalculator } from '../../../packages/dinero.js/src/core/types';
+// The same arithmetic with operator syntax (Stage 2's goal). `Calculator`
+// stands in for DineroCalculator once Stage 2 makes it a typeclass with `@op`
+// tags: the same methods, nothing added. Compile with
+// `typesugar expand distribute.after.ts`: every operator becomes a
+// `calculator.*` call (README.md).
+
+/** @typeclass */
+export interface Calculator<A> {
+  /** @op + */ add(a: A, b: A): A;
+  /** @op - */ subtract(a: A, b: A): A;
+  /** @op * */ multiply(a: A, b: A): A;
+  /** @op / */ integerDivide(a: A, b: A): A;
+  compare(a: A, b: A): -1 | 0 | 1;
+  zero(): A;
+}
 
 export function distributeArithmetic<TAmount>(
+  calculator: Calculator<TAmount>,
   value: TAmount,
   ratios: readonly TAmount[],
+  equalFn: (a: TAmount, b: TAmount) => boolean,
   index: number,
   shares: TAmount[],
-  amount: TAmount,
-  calculator: DineroCalculator<TAmount> = implicit()
+  amount: TAmount
 ) {
   const zero = calculator.zero();
   const total = ratios.reduce((a, b) => a + b, zero);
   let remainder = value;
-  const share = (value * ratios[index]) / total || zero; // `/` = integerDivide
+  // `/` = integerDivide. Split from `|| zero`: `typesugar check` doesn't see
+  // the rewritten type through `||` (CASE-STUDY.md, F8).
+  const quotient: TAmount = (value * ratios[index]) / total;
+  const share = quotient || zero;
   remainder = remainder - share; // `-=` is not supported by @op
   shares[index] = shares[index] + amount;
   const newRemainder = remainder - amount;
-  return newRemainder === remainder;
+  // `===` would need an Eq dictionary; the calculator only has compare.
+  return equalFn(newRemainder, remainder);
 }

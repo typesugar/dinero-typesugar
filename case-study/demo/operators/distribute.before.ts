@@ -15,8 +15,10 @@ export function distributeArithmetic<TAmount>(
   const total = ratios.reduce((a, b) => calculator.add(a, b), zero);
   let remainder = value;
   const share =
-    calculator.integerDivide(calculator.multiply(value, ratios[index]), total) ||
-    zero;
+    calculator.integerDivide(
+      calculator.multiply(value, ratios[index]),
+      total
+    ) || zero;
   remainder = calculator.subtract(remainder, share);
   shares[index] = calculator.add(shares[index], amount);
   const newRemainder = calculator.subtract(remainder, amount);

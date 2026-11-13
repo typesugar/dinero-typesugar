@@ -1,9 +1,15 @@
 # Operator syntax demo (Stage 2 preview)
 
-What operator syntax would buy dinero, and what typesugar compiles today.
-Run from the repo root after `npm ci`:
+What operator syntax buys dinero, compiled with the vendored typesugar
+(`vendor/typesugar/COMMIT`). From the repo root after `npm ci`:
 
     node case-study/demo/operators/run.mjs
+    cd case-study/demo/operators && ../../../node_modules/.bin/typesugar check -p tsconfig.json
+    ../../../node_modules/.bin/typesugar expand distribute.after.ts
+
+The root `tsconfig.json` excludes this directory: plain `tsc` rejects
+operators on objects and type parameters by design, and `typesugar check` is
+the type check for these files.
 
 ## The syntax win
 
@@ -20,26 +26,27 @@ today; `distribute.after.ts` is the same arithmetic with operators:
 | `calculator.integerDivide(calculator.multiply(value, ratio), total)` | `(value * ratio) / total` |
 | `remainder = calculator.subtract(remainder, share)` | `remainder = remainder - share` |
 | `shares[i] = calculator.add(shares[i], amount)` | `shares[i] = shares[i] + amount` |
-| `equalFn(newRemainder, remainder)` | `newRemainder === remainder` |
 
-## What compiles today
+`typesugar expand distribute.after.ts` turns every operator back into the
+`calculator.*` call on the left. `distribute.after.ts` declares its own
+`Calculator` typeclass (DineroCalculator's methods with `@op` tags), because
+making DineroCalculator itself a typeclass is Stage 2's work. Two things stay
+as calls: `===` (it would need an `Eq` dictionary; the calculator only has
+`compare`, and adding a method would break custom calculators) and `-=`
+(`@op` doesn't cover assignment operators).
 
-`generic-vs-concrete.ts` defines a calculator typeclass with `@op` tags and
-an instance for an object type, then writes `(a + b) * k` twice:
+## Generic and concrete operands
 
-- **Concrete operand types: works, fully inlined.**
-  `(x + y) * x` with `x, y: Big` compiles to `({ v: (x.v + y.v) * x.v })`.
+`generic-vs-concrete.ts` writes `(a + b) * k` twice against a calculator
+typeclass with an instance for an object type, and `run.mjs` runs the
+expanded code:
+
+- **Concrete operand types** (`x, y: Big`): `({ v: (x.v + y.v) * x.v })`.
   Result `{"v":3}`.
-- **Generic operand types: not rewritten.** In
-  `function addThenScale<A>(a: A, b: A, k: A, c: Calc<A> = implicit())`, the
-  operators stay native JavaScript. Specialisation then substitutes
-  `A = Big` and inlines the body unchanged, so `addThenScale(x, y, x)` runs
-  `({...} + {...}) * {...}` and returns `NaN`. `typesugar check` reports
-  TS2365 / TS2363 on the generic body, but the bundler plugin does not type
-  check, so a tsdown build emits it without an error (CASE-STUDY.md, F7).
+- **Generic operand types** (`a, b, k: A` with `c: Calc<A>` in scope):
+  the function compiles to `c.multiply(c.add(a, b), k)`, and its
+  specialization for `Big` is `({ v: (a.v + b.v) * k.v })`. Result
+  `{"v":3}`.
 
-dinero's `core/` is generic over `TAmount` throughout, and `number` and
-`bigint` operands are primitives, which operators never dispatch on. So until
-typesugar dispatches an operator on a type parameter to the dictionary in
-scope (here, `calculator`), the table above is a sketch, not something
-Stage 2 can ship.
+With typesugar before `c33dfa8b` the generic operators stayed native
+JavaScript and the specialization returned `NaN` (CASE-STUDY.md, F7).
