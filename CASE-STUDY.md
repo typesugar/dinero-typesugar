@@ -146,8 +146,10 @@ and status. Getting there took four typesugar fixes (F1–F4).
 
 typesugar: branch
 [`dinero-case-study-fixes`](https://github.com/typesugar/typesugar/tree/dinero-case-study-fixes)
-(local only for now) at `2da17ee3`, which is `main` at `86bcf8c7` plus the four
-fixes. It is vendored in `vendor/typesugar/`.
+at `2da17ee3`, which is `main` at `86bcf8c7` plus the four fixes. It is
+vendored in `vendor/typesugar/`. F1, F3 and F4 go upstream as
+[typesugar#103](https://github.com/typesugar/typesugar/pull/103); F2 is
+already on `main` as the neverthrow study's equivalent fix (below).
 
 What changed in the fork (no file under `packages/dinero.js/src` changed):
 
@@ -214,7 +216,8 @@ Numbered separately from the Turf study's; "Turf F5" refers to that study._
   Rollup plugin. Fix: `src/rolldown.ts`, a tsup entry, the export, and docs
   (README, config and packages references). `entry-points.test.ts` now checks
   every bundler end to end (src module, tsup entry, export). Commit `02479fc3`
-  on `dinero-case-study-fixes`, with a changeset.
+  on `dinero-case-study-fixes`, with a changeset; upstream in
+  [typesugar#103](https://github.com/typesugar/typesugar/pull/103).
 - **F2 (bug, fixed): the bundler plugin rebuilt the TypeScript Program once per
   file.** `transform` compared the bundler's code with the last code it had
   seen for that file, a map that starts empty, so every file's first transform
@@ -229,8 +232,9 @@ Numbered separately from the Turf study's; "Turf F5" refers to that study._
   explains part of Turf's build going from 74 s to 103 s in its Stage 0
   (not measured). The neverthrow case study, run at the same time, found the
   same bug independently on Rollup (its F3) and wrote the same fix (typesugar
-  `932d6e55` on `neverthrow-case-study-fixes`); only one of the two goes
-  upstream.
+  `932d6e55` on `neverthrow-case-study-fixes`), with the same behaviour.
+  That one is on `main` (typesugar#87), so `56f43c89` stays on this study's
+  branch only.
 - **F3 (bug, fixed): generated declaration files went through the pipeline.**
   tsdown's `dts` plugin (rolldown-plugin-dts) hands the bundler a generated
   `.d.ts` module for each source file, and the plugin's default include
@@ -240,7 +244,7 @@ Numbered separately from the Turf study's; "Turf F5" refers to that study._
   rebuilt for each (1, 2, ... 99 files). 211 Program builds in one tsdown run.
   Declaration files hold nothing a macro could expand, so the filter now
   always skips `.d.ts`, `.d.mts` and `.d.cts`. Build: 12.7 s → 3.8 s. Commit
-  `56e16666`, test first, with docs.
+  `56e16666`, test first, with docs; upstream in typesugar#103.
 - **F4 (gap, fixed for `unplugin-typesugar`; open for 19 packages): no types
   for subpath imports under `moduleResolution: node10`.** dinero v2.0.2's root
   tsconfig uses node10, which ignores `exports`, so `vitest.config.ts` and
@@ -248,7 +252,8 @@ Numbered separately from the Turf study's; "Turf F5" refers to that study._
   `unplugin-typesugar/vite` and `/rolldown`. node10 is still the default with
   `module: commonjs`. Fix: `typesVersions` mapping each bundler subpath to its
   `.d.ts`; bundler and node16 resolution still read `exports` (checked with
-  `ts.resolveModuleName` under both). Commit `2da17ee3`, test first. Still
+  `ts.resolveModuleName` under both). Commit `2da17ee3`, test first; upstream
+  in typesugar#103. Still
   open: 19 other published packages have subpath exports and no
   `typesVersions`, including `typesugar` (8 subpaths), `@typesugar/std` (28,
   e.g. `@typesugar/std/syntax/numeric/ops`, which Stage 2 imports) and

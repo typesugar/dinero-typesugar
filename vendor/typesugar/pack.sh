@@ -53,6 +53,12 @@ done
   echo "files:"
   (cd "$OUT" && shasum -a 256 *.tgz | sed 's/^/  /')
 } > "$OUT/COMMIT"
+# COMMIT is published with the fork: refuse to keep it if a credential survived.
+if grep -Eq '://[^/@[:space:]]+@|ghp_|github_pat_|gho_' "$OUT/COMMIT"; then
+  rm -f "$OUT/COMMIT"
+  echo "error: a credential survived in COMMIT's remote URL; not written" >&2
+  exit 1
+fi
 
 # Point the root devDependencies and overrides at the new names.
 node "$OUT/wire.mjs" "$DINERO/package.json" "$OUT"
