@@ -2,6 +2,7 @@ import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
 
 import { defineConfig } from 'tsdown';
+import typesugar from 'unplugin-typesugar/rolldown';
 
 const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'));
 
@@ -33,6 +34,7 @@ export default defineConfig([
     dts: true,
     clean: true,
     outExtensions: () => ({ js: '.js', dts: '.d.ts' }),
+    plugins: [typesugar()],
     define: {
       __DEV__: "process.env.NODE_ENV !== 'production'",
       __TEST__: "process.env.NODE_ENV === 'test'",
@@ -51,6 +53,7 @@ export default defineConfig([
       banner,
       entryFileNames: '[name].js',
     },
+    plugins: [typesugar()],
     define: {
       'process.env.NODE_ENV': '"production"',
       __DEV__: 'false',
@@ -70,6 +73,7 @@ export default defineConfig([
       banner,
       entryFileNames: '[name].js',
     },
+    plugins: [typesugar()],
     define: {
       'process.env.NODE_ENV': '"development"',
       __DEV__: 'true',
@@ -89,6 +93,7 @@ export default defineConfig([
       banner,
       entryFileNames: '[name].js',
     },
+    plugins: [typesugar()],
     define: {
       'process.env.NODE_ENV': '"production"',
       __DEV__: 'false',
@@ -108,6 +113,7 @@ export default defineConfig([
       banner,
       entryFileNames: '[name].js',
     },
+    plugins: [typesugar()],
     define: {
       'process.env.NODE_ENV': '"development"',
       __DEV__: 'true',

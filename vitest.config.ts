@@ -1,7 +1,9 @@
 import { defineConfig } from 'vitest/config';
 import path from 'path';
+import typesugar from 'unplugin-typesugar/vite';
 
 export default defineConfig({
+  plugins: [typesugar()],
   esbuild: {
     tsconfigRaw: '{}',
   },
