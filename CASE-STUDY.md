@@ -285,7 +285,9 @@ Numbered separately from the Turf study's; "Turf F5" refers to that study._
   specialiser inlines the instance for those operators as it does for
   `c.add(a, b)` written out; `typesugar check` drops the operand errors where
   the operator is rewritten and types the result as `A`. typesugar
-  `c33dfa8b`, tests first (7 rewrite and 2 check tests), docs in the
+  `c33dfa8b` (upstream as
+  [typesugar#105](https://github.com/typesugar/typesugar/pull/105), rebased
+  onto `main`), tests first (7 rewrite and 2 check tests), docs in the
   operators and specialisation guides. The full typesugar suite passes once
   every package is built: the first run's 144 failures, in 47 files, were
   packages with no `dist/` in that worktree, and those files pass after
