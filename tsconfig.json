@@ -30,6 +30,7 @@
     "**/temp",
     "**/node_modules",
     "docs",
-    "examples"
+    "examples",
+    "case-study/demo"
   ]
 }
